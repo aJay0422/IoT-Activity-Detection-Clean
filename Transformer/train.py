@@ -44,7 +44,7 @@ def train(model, epochs, trainloader, testloader, optimizer, criterion, save_pat
             # evaluate train
             train_loss, train_acc = get_loss_acc(model, trainloader, criterion)
             # evaluate test
-            test_loss, test_acc = get_loss_acc(model, trainloader, criterion)
+            test_loss, test_acc = get_loss_acc(model, testloader, criterion)
 
         print("Epoch {}/{} train loss: {}  test loss: {}  train acc: {}  test acc: {}".format(epoch+1, epochs,
                                                                                               train_loss, test_loss,

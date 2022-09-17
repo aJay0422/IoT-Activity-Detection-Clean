@@ -89,5 +89,3 @@ def count_parameters(model):
     print("Total parameters: {}".format(count))
     print("Trainable parameters: {}".format(trainable))
     return count, trainable
-
-
