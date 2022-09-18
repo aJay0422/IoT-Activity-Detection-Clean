@@ -19,7 +19,7 @@ class mydataset_w_weight(Dataset):
         return len(self.Label)
 
 
-def prepare_data_w_weight(test_ratio=0.2, weights=None, seed=20220712):
+def prepare_data_w_weight(test_ratio=0.2, weights=np.ones(951), seed=20220712):
     all_data = np.load(FEATURE_ARCHIVE + "all_feature_interp951,npz", allow_pickle=True)
     X_all = all_data["X"]
     Y_all = all_data["Y"]
@@ -28,6 +28,7 @@ def prepare_data_w_weight(test_ratio=0.2, weights=None, seed=20220712):
     # split data
     np.random.seed(seed)
     n_samples = X_all.shape[0]
+    assert n_samples == len(weights), "The number of weights({}) doesn't match the number of samples({})".format(len(weights), n_samples)
     test_size = int(n_samples * test_ratio)
     perm = np.random.permutation(n_samples)
     test_idx = perm[:test_size]
