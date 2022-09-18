@@ -4,7 +4,7 @@ Updating
 ## Dataset Introduction
 Currently, we are using a dataset consists of 951 videos.  
 First, we use [Detectron2](https://github.com/facebookresearch/detectron2) to extract human body keypoints feature.
-In each frame, there are 17 keypoints represented by their 2D coordinates with in the frame (x, y). For each video,
+In each frame, there are 17 keypoints represented by their 2D coordinates (x,y). For each video,
 the number of feature is 17 * 2 * n_frames.  
 Second, we interpolate the feature sequence to length 100, then we have 17 * 2 * 100 = 3400 features for each video.  
 The interpolated data can be found in the folder `feature_archive/all_feature_interp951.npz` or [download](https://drive.google.com/drive/folders/1Wmhi-ftV_buR9jFlPW0u4IR6F3idyr5G?usp=sharing)
@@ -38,7 +38,7 @@ model_huge = transformer_huge()
 
 ## Transformer/train.py
 This file is for training a Transformer model. I have trained the models of different size for 5 times
-on different train test split. The model weights can be found in the folder `Transformer/model_weights`
+on different train test split. The model weights can be found in the folder [Transformer/model_weights](https://github.com/aJay0422/IoT-Activity-Detection-Clean/tree/main/Transformer/model_weights)
 or [download](https://drive.google.com/drive/folders/1Wmhi-ftV_buR9jFlPW0u4IR6F3idyr5G?usp=sharing) here.
 ```python
 import torch
@@ -51,3 +51,26 @@ weight_path = "path/to/weight"
 model.load_state_dict(torch.load(weight_path, map_location=device))
 ```
 
+## Transformer/weighted train.py
+The idea is base on that our keypoint feature estimation may not be accurate. We can use the confidence scores 
+detecctron2 returns to calculate a single confidence score for each video. For those videos with high confidence,
+we should give them more weights when training.  
+  
+For each keypoint in each frame in each video, we have one confidence score. Therefore, for each video,
+we have __17 * n_frames__ confidence scores. Since the keypoint features we're using were interpolated in the temporal
+dimension, we do the same to the confidence score. In the end, the number of scores in each video is 
+__17 * 100__. Our goal is to turn these 1700 scores into one single score for each video, in a clever way.
+  
+The interpolated confidence scores can be found in the folder [feature_archive](https://github.com/aJay0422/IoT-Activity-Detection-Clean/tree/main/feature_archive)
+or [download](https://drive.google.com/drive/folders/1Wmhi-ftV_buR9jFlPW0u4IR6F3idyr5G?usp=sharing) here.
+
+```python
+# How to use interpolated confidence score
+import numpy as np
+
+scores = np.load("feature_archive/confidence_scores_by_frame.npy")   # shape(951, 100, 17)
+```
+  
+To use the weights in the training process, we need to use a new dataloader, which not only `X_batch` and `Y_batch`
+at each iteration but also `weight_batch` which contains the weight for each sample within this batch. Please see
+details in `mydataset_w_weight` in [Transformer/weighted train](https://github.com/aJay0422/IoT-Activity-Detection-Clean/blob/main/Transformer/weighted%20train.py).
