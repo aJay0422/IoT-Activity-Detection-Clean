@@ -57,7 +57,7 @@ detectron2 returns to calculate a single confidence score for each video. For th
 we should give them more weights when training.  
   
 For each keypoint in each frame in each video, we have one confidence score. Therefore, for each video,
-we have __17 * n_frames__ confidence scores. Since the keypoint features we're using were interpolated in the temporal
+we have __17 * n_frames__ confidence scores. Since the keypoint features we're using were interpolated along the temporal
 dimension, we do the same to the confidence score. In the end, the number of scores in each video is 
 __17 * 100__. Our goal is to turn these 1700 scores into one single score for each video, in a clever way.
   
