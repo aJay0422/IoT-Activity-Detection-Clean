@@ -53,7 +53,7 @@ model.load_state_dict(torch.load(weight_path, map_location=device))
 
 ## Transformer/weighted train.py
 The idea is base on that our keypoint feature estimation may not be accurate. We can use the confidence scores 
-detecctron2 returns to calculate a single confidence score for each video. For those videos with high confidence,
+detectron2 returns to calculate a single confidence score for each video. For those videos with high confidence,
 we should give them more weights when training.  
   
 For each keypoint in each frame in each video, we have one confidence score. Therefore, for each video,
